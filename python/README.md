@@ -19,9 +19,19 @@ Full documentation and examples available at the homepage: https://facebook.gith
 - [Statsmodels](http://statsmodels.sourceforge.net/)
 
 ## Installation
+To install along with pre-compiling of stand model, use
+```shell
+python setup.py install --build-model
+```
+Alternatively, you can try following to create the model right in the source package.
+```shell
+python setup.py develop --build-model
+```
+
+To install the default compiled stan model, run
 
 ```shell
-pip install fbprophet
+python setup.py install
 ```
 Note:  Installation requires PyStan, which has its [own installation instructions](http://pystan.readthedocs.io/en/latest/installation_beginner.html).
 On Windows, PyStan requires a compiler so you'll need to [follow the instructions](http://pystan.readthedocs.io/en/latest/windows.html).
