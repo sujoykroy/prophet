@@ -3,6 +3,8 @@
 
 # Persisted models.
 *.pkl
+!python/fbprophet/stan_model/unix/*.pkl
+!python/fbprophet/stan_model/win/*.pkl
 
 # Setuptools distribution folder.
 python/dist/
@@ -17,3 +19,4 @@ build/
 *.*~
 
 *.idea
+env/*

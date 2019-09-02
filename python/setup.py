@@ -25,7 +25,7 @@ if platform.platform().startswith('Win'):
     PLATFORM = 'win'
 
 MODEL_DIR = os.path.join('stan', PLATFORM)
-MODEL_TARGET_DIR = os.path.join('fbprophet', 'stan_model')
+MODEL_TARGET_DIR = os.path.join('fbprophet', 'stan_model', PLATFORM)
 
 
 def build_stan_model(target_dir, model_dir=MODEL_DIR):
@@ -41,9 +41,17 @@ def build_stan_model(target_dir, model_dir=MODEL_DIR):
 
 class BuildPyCommand(build_py):
     """Custom build command to pre-compile Stan models."""
+    user_options = build_py.user_options + [
+       ('build-model', 'b', 'build stan model') ]
+
+    boolean_options = build_py.boolean_options + ['build-model']
+
+    def initialize_options(self):
+        super().initialize_options()
+        self.build_model = None
 
     def run(self):
-        if not self.dry_run:
+        if not self.dry_run and self.build_model:
             target_dir = os.path.join(self.build_lib, MODEL_TARGET_DIR)
             self.mkpath(target_dir)
             build_stan_model(target_dir)
@@ -53,9 +61,17 @@ class BuildPyCommand(build_py):
 
 class DevelopCommand(develop):
     """Custom develop command to pre-compile Stan models in-place."""
+    user_options = develop.user_options + [
+       ('build-model', 'b', 'build stan model') ]
+
+    boolean_options = develop.boolean_options + ['build-model']
+
+    def initialize_options(self):
+        super().initialize_options()
+        self.build_model = None
 
     def run(self):
-        if not self.dry_run:
+        if not self.dry_run and self.build_model:
             target_dir = os.path.join(self.setup_path, MODEL_TARGET_DIR)
             self.mkpath(target_dir)
             build_stan_model(target_dir)
@@ -102,7 +118,7 @@ with open('requirements.txt', 'r') as f:
 
 setup(
     name='fbprophet',
-    version='0.5',
+    version='0.5.0',
     description='Automatic Forecasting Procedure',
     url='https://facebook.github.io/prophet/',
     author='Sean J. Taylor <sjtz@pm.me>, Ben Letham <bletham@fb.com>',
@@ -111,6 +127,7 @@ setup(
     packages=find_packages(),
     setup_requires=[
     ],
+    package_data={'': ['stan_model/unix/*.pkl']},
     install_requires=install_requires,
     zip_safe=False,
     include_package_data=True,

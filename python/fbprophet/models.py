@@ -9,13 +9,17 @@ from __future__ import absolute_import, division, print_function
 import pickle
 
 import pkg_resources
+import platform
 
+PLATFORM = 'unix'
+if platform.platform().startswith('Win'):
+    PLATFORM = 'win'
 
 def get_prophet_stan_model():
     """Load compiled Stan model"""
     model_file = pkg_resources.resource_filename(
         'fbprophet',
-        'stan_model/prophet_model.pkl',
+        f'stan_model/{PLATFORM}/prophet_model.pkl',
     )
     with open(model_file, 'rb') as f:
         return pickle.load(f)
